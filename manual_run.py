@@ -18,6 +18,9 @@ from strategies.sma_crossover import (
 from visualizations.plots import (
     generate_all_charts,
 )
+from optimization.optimizer import (
+    optimize_strategy,
+)
 
 
 logging.basicConfig(
@@ -279,6 +282,67 @@ def main():
             f"Max Drawdown: "
             f"{winner['Max Drawdown']:.4%}"
         )
+
+    print(
+        "\n"
+        + "=" * 80
+    )
+
+    print(
+        "SMA OPTIMIZATION"
+    )
+
+    print(
+        "=" * 80
+    )
+
+    optimization = optimize_strategy(
+        data=data,
+        strategy_class=SMACrossoverStrategy,
+        parameter_grid=[
+            {
+                "fast_window": 10,
+                "slow_window": 30,
+            },
+            {
+                "fast_window": 20,
+                "slow_window": 50,
+            },
+            {
+                "fast_window": 50,
+                "slow_window": 200,
+            },
+        ],
+        backtester=backtester,
+    )
+
+    print(
+        optimization[
+            "results"
+        ].to_string(
+            index=False
+        )
+    )
+
+    print(
+        "\nBest Parameters:"
+    )
+
+    print(
+        optimization[
+            "best_parameters"
+        ]
+    )
+
+    print(
+        "\nBest Sharpe:"
+    )
+
+    print(
+        optimization[
+            "best_score"
+        ]
+    )
 
     print(
         "\n"
